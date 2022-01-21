@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/share"
+        android:iconTint="@color/dark_color"
+        android:icon="@drawable/ic_share_all"
+        android:title="@string/share"
+        tools:targetApi="o" />
+    <item
+        android:id="@+id/import_from_gallery"
+        android:icon="@drawable/ic_import_gallery"
+        android:iconTint="@color/dark_color"
+        android:title="@string/importFromGallery" />
+    <item
+        android:id="@+id/save_to_gallery"
+        android:icon="@drawable/ic_save_as_gallery"
+        android:iconTint="@color/dark_color"
+        android:title="@string/saveToGallery" />
+    <item
+        android:id="@+id/rename"
+        android:icon="@drawable/ic_rename"
+        android:iconTint="@color/dark_color"
+        android:title="@string/rename"
+        tools:targetApi="o" />
+    <item
+        android:id="@+id/send_to_mail"
+        android:icon="@drawable/pic_send_to_mail"
+        android:iconTint="@color/dark_color"
+        android:title="@string/sendToMail"
+        tools:targetApi="o" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete"
+        android:iconTint="@color/dark_color"
+        android:title="@string/delete"
+        tools:targetApi="o" />
+</menu>
