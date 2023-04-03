@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.onesignal.OneSignal;
+//import com.onesignal.OneSignal;
 import com.bumbumapps.documentscannerfastest.main_utils.Constant;
 
 import me.pqpo.smartcropperlib.SmartCropper;
@@ -24,11 +24,11 @@ public class MyApp extends Application {
         SmartCropper.buildImageDetector(this);
 
         // Enable verbose OneSignal logging to debug issues if needed.
-        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-
-        // OneSignal Initialization
-        OneSignal.initWithContext(this);
-        OneSignal.setAppId(ONESIGNAL_APP_ID);
+//        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+//
+//        // OneSignal Initialization
+//        OneSignal.initWithContext(this);
+//        OneSignal.setAppId(ONESIGNAL_APP_ID);
 
         initTheme();
     }

@@ -344,7 +344,7 @@ public class CropDocumentActivity extends BaseActivity implements View.OnClickLi
                 if (iv_preview_crop.canRightCrop()) {
                     Constant.original = iv_preview_crop.crop();
                     Constant.IdentifyActivity = "CurrentFilterActivity";
-                    AdsUtils.showGoogleInterstitialAd(CropDocumentActivity.this, true);
+                    AdsUtils.showGoogleInterstitialAd(CropDocumentActivity.this, false);
                     return;
                 }
                 return;
@@ -446,7 +446,7 @@ public class CropDocumentActivity extends BaseActivity implements View.OnClickLi
             selected_group_name = group_name;
             current_docs_name = current_doc_name;
             Constant.IdentifyActivity = "DocumentEditorActivity_Crop";
-            AdsUtils.showGoogleInterstitialAd(CropDocumentActivity.this, true);
+            AdsUtils.showGoogleInterstitialAd(CropDocumentActivity.this, false);
         }
     }
 

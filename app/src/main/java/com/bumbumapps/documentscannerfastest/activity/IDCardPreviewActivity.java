@@ -208,7 +208,7 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.ly_add_new:
                 Constant.IdentifyActivity = "IDCardGalleryActivity";
-                AdsUtils.showGoogleInterstitialAd(IDCardPreviewActivity.this,true);
+                AdsUtils.showGoogleInterstitialAd(IDCardPreviewActivity.this,false);
                 return;
             case R.id.iv_back:
                 onBackPressed();
