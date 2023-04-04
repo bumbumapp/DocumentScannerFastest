@@ -247,7 +247,7 @@ public class SavedEditDocumentActivity extends BaseActivity implements View.OnCl
                     return;
                 }
                 Constant.IdentifyActivity = "DocumentEditorActivity_SavedEdit";
-                AdsUtils.showGoogleInterstitialAd(SavedEditDocumentActivity.this, false);
+                AdsUtils.showGoogleInterstitialAd(SavedEditDocumentActivity.this, true);
                 return;
             case OPENPDF:
                 ArrayList arrayList = new ArrayList();

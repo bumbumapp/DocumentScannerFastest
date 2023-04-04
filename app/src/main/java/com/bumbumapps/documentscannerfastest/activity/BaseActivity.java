@@ -19,6 +19,8 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.bumbumapps.documentscannerfastest.Globals;
+import com.bumbumapps.documentscannerfastest.Timers;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -43,6 +45,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        if (!Globals.TIMER_FINISHED){
+            Timers.timer().start();
+        }
+
     }
 
     public Bitmap getMainFrameBitmap(View view) {

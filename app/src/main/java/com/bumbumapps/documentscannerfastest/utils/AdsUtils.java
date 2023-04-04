@@ -8,7 +8,9 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.bumbumapps.documentscannerfastest.Globals;
 import com.bumbumapps.documentscannerfastest.R;
+import com.bumbumapps.documentscannerfastest.Timers;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -21,7 +23,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import com.bumbumapps.documentscannerfastest.main_utils.Constant;
-
 public class AdsUtils {
 
     public static void showGoogleBannerAd(Context context, AdView adView) {
@@ -50,33 +51,6 @@ public class AdsUtils {
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         mInterstitialAd = interstitialAd;
 
-                        interstitialAd.setFullScreenContentCallback(
-                                new FullScreenContentCallback() {
-                                    @Override
-                                    public void onAdDismissedFullScreenContent() {
-                                        // Called when fullscreen content is dismissed.
-                                        // Make sure to set your reference to null so you don't
-                                        // show it a second time.
-                                        mInterstitialAd = null;
-                                        jumpNextActivity(activity);
-                                        Log.d("TAG", "The ad was dismissed.");
-                                    }
-
-                                    @Override
-                                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                        // Called when fullscreen content failed to show.
-                                        // Make sure to set your reference to null so you don't
-                                        // show it a second time.
-                                        mInterstitialAd = null;
-                                        Log.d("TAG", "The ad failed to show.");
-                                    }
-
-                                    @Override
-                                    public void onAdShowedFullScreenContent() {
-                                        // Called when fullscreen content is shown.
-                                        Log.d("TAG", "The ad was shown.");
-                                    }
-                                });
                     }
 
                     @Override
@@ -88,16 +62,51 @@ public class AdsUtils {
     }
 
     public static void showGoogleInterstitialAd(Activity activity, boolean isShowAd) {
-        if (isShowAd) {
-            if (mInterstitialAd != null) {
-                mInterstitialAd.show(activity);
+        if(Globals.TIMER_FINISHED){
+            Log.d("SDSF",""+Globals.TIMER_FINISHED);
+            if (isShowAd) {
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(activity);
+                    mInterstitialAd.setFullScreenContentCallback(
+                            new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    // Called when fullscreen content is dismissed.
+                                    // Make sure to set your reference to null so you don't
+                                    // show it a second time.
+                                    Timers.timer().start();
+                                    Globals.TIMER_FINISHED=false;
+                                    mInterstitialAd = null;
+                                    jumpNextActivity(activity);
+                                    Log.d("SDSF", "The ad was dismissed.");
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                    // Called when fullscreen content failed to show.
+                                    // Make sure to set your reference to null so you don't
+                                    // show it a second time.
+                                    mInterstitialAd = null;
+                                    Log.d("TAG", "The ad failed to show.");
+                                }
+
+                                @Override
+                                public void onAdShowedFullScreenContent() {
+                                    // Called when fullscreen content is shown.
+                                    Log.d("TAG", "The ad was shown.");
+                                }
+                            });
+                } else {
+                    jumpNextActivity(activity);
+                }
+                loadGoogleInterstitialAd(activity, activity);
             } else {
                 jumpNextActivity(activity);
             }
-            loadGoogleInterstitialAd(activity, activity);
-        } else {
+        }else{
             jumpNextActivity(activity);
         }
+
 
     }
 

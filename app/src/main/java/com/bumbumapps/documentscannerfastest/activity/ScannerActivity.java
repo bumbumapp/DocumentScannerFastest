@@ -634,7 +634,7 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
             Constant.IdentifyActivity = "";
             finish();
             Constant.IdentifyActivity = "DocumentEditorActivity_Scanner";
-           AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, false);
+//           AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
         }
     }
 
@@ -1019,7 +1019,7 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
                             }
                             Constant.original = bitmap;
                             Constant.IdentifyActivity = "CropDocumentActivity2";
-                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, false);
+                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
                         }
                     });
                 } else {
@@ -1032,7 +1032,7 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
                             }
                             Constant.original = bitmap;
                             Constant.IdentifyActivity = "CropDocumentActivity2";
-                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, false);
+                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
                         }
                     });
                 }
@@ -1228,7 +1228,7 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
             progressBar.setVisibility(View.GONE);
             finish();
             Constant.IdentifyActivity = "SavedEditDocumentActivity3";
-            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, false);
+            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
         }
     }
 
