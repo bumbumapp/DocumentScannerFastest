@@ -63,7 +63,6 @@ public class AdsUtils {
 
     public static void showGoogleInterstitialAd(Activity activity, boolean isShowAd) {
         if(Globals.TIMER_FINISHED){
-            Log.d("SDSF",""+Globals.TIMER_FINISHED);
             if (isShowAd) {
                 if (mInterstitialAd != null) {
                     mInterstitialAd.show(activity);

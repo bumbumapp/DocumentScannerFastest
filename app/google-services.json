@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "314039009975",
+    "project_id": "doc-scanner-a4e91",
+    "storage_bucket": "doc-scanner-a4e91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314039009975:android:5972e8a53ea84ff5220332",
+        "android_client_info": {
+          "package_name": "com.bumbumapps.documentscannerfastest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314039009975-k42q5bvp2jr8biqcjrdnf627onp3vb93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAedlPah339LCheTgi-Q1MLUcEfVdc3UPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314039009975-k42q5bvp2jr8biqcjrdnf627onp3vb93.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

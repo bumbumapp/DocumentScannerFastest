@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 //import com.onesignal.OneSignal;
 import com.bumbumapps.documentscannerfastest.main_utils.Constant;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import me.pqpo.smartcropperlib.SmartCropper;
 
 public class MyApp extends Application {
-    private static final String ONESIGNAL_APP_ID = "########-####-####-####-############";
     private static MyApp instance;
     private boolean showAds = true;
 
@@ -22,13 +22,7 @@ public class MyApp extends Application {
         instance = this;
 
         SmartCropper.buildImageDetector(this);
-
-        // Enable verbose OneSignal logging to debug issues if needed.
-//        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-//
-//        // OneSignal Initialization
-//        OneSignal.initWithContext(this);
-//        OneSignal.setAppId(ONESIGNAL_APP_ID);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
         initTheme();
     }

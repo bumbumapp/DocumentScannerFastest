@@ -45,9 +45,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        if (!Globals.TIMER_FINISHED){
-            Timers.timer().start();
-        }
+
 
     }
 

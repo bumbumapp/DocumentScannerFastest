@@ -36,26 +36,26 @@ public class GroupDocAdapter extends RecyclerView.Adapter<GroupDocAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-        if (i < (arrayList.size() - 1)) {
+    public void onBindViewHolder(final ViewHolder viewHolder,  int position) {
+        if (position < (arrayList.size() - 1)) {
             viewHolder.newScanLayout.setVisibility(View.GONE);
             viewHolder.docLayout.setVisibility(View.VISIBLE);
-            Glide.with(activity).load(arrayList.get(i).getGroup_doc_img()).into(viewHolder.iv_doc);
+            Glide.with(activity).load(arrayList.get(position).getGroup_doc_img()).into(viewHolder.iv_doc);
             TextView textView = viewHolder.tv_doc_name;
-            textView.setText("Page " + (i + 1));
+            textView.setText("Page " + (position + 1));
             viewHolder.iv_doc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((GroupDocumentActivity) activity).onClickSingleDoc(i);
+                    ((GroupDocumentActivity) activity).onClickSingleDoc(position);
                 }
             });
             viewHolder.iv_doc_item_more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((GroupDocumentActivity) activity).onClickItemMore(i, viewHolder.tv_doc_name.getText().toString());
+                    ((GroupDocumentActivity) activity).onClickItemMore(position, viewHolder.tv_doc_name.getText().toString());
                 }
             });
-            if (arrayList.get(i).getGroup_doc_note().equals("Insert text here...")) {
+            if (arrayList.get(position).getGroup_doc_note().equals("Insert text here...")) {
                 viewHolder.iv_note.setVisibility(View.GONE);
             } else {
                 viewHolder.iv_note.setVisibility(View.VISIBLE);

@@ -34,6 +34,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -259,6 +262,24 @@ public class DocumentEditorActivity extends BaseActivity implements View.OnClick
     private TextView txtColor, txtEraser, txtHighlight;
     private TextView txtCreateSig, txtSavedSig;
 
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    Glide.with(getApplicationContext()).asDrawable().load(uri).into(new SimpleTarget<Drawable>() {
+                        public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
+                            stickerView.addSticker(new DrawableSticker(drawable), 1);
+                            ly_edit_tools.setVisibility(View.INVISIBLE);
+                            iv_done.setVisibility(View.INVISIBLE);
+                            documentEditorActivity.slideUpAnimation(documentEditorActivity.ly_opacity);
+                            sb_opacity.setProgress(255);
+                        }
+                    });
+                }
+                else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+
+            });
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
     }
@@ -513,20 +534,26 @@ public class DocumentEditorActivity extends BaseActivity implements View.OnClick
                 iv_done.setVisibility(View.INVISIBLE);
                 return;
             case PICTURE:
-                ImagePicker.with((Activity) this)
-                        .setStatusBarColor("#221F35")
-                        .setToolbarColor("#221F35")
-                        .setBackgroundColor("#ffffff")
-                        .setFolderMode(true)
-                        .setFolderTitle("Gallery")
-                        .setMultipleMode(true)
-                        .setShowNumberIndicator(true)
-                        .setAlwaysShowDoneButton(true)
-                        .setMaxSize(1)
-                        .setShowCamera(false)
-                        .setLimitMessage("You can select up to 1 images")
-                        .setRequestCode(100)
-                        .start();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                            .build());
+                }else {
+                    ImagePicker.with((Activity) this)
+                            .setStatusBarColor("#221F35")
+                            .setToolbarColor("#221F35")
+                            .setBackgroundColor("#ffffff")
+                            .setFolderMode(true)
+                            .setFolderTitle("Gallery")
+                            .setMultipleMode(true)
+                            .setShowNumberIndicator(true)
+                            .setAlwaysShowDoneButton(true)
+                            .setMaxSize(1)
+                            .setShowCamera(false)
+                            .setLimitMessage("You can select up to 1 images")
+                            .setRequestCode(100)
+                            .start();
+                }
                 return;
             case SIGNATURE:
                 iv_create_signature.setImageResource(R.drawable.ic_create_sig_selection);

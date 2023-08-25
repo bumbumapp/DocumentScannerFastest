@@ -22,4 +22,3 @@
 
 -keep class me.pqpo.smartcropperlib.**{*;}
 -keep class com.shockwave.**
--keep class com.android.vending.billing.**

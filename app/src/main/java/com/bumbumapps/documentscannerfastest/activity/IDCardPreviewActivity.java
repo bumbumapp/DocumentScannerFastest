@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.internal.view.SupportMenu;
 
 import com.bumptech.glide.Glide;
@@ -45,6 +49,7 @@ import com.bumbumapps.documentscannerfastest.scrapbook.TextStickerConfig;
 import com.bumbumapps.documentscannerfastest.main_utils.BitmapUtils;
 import com.bumbumapps.documentscannerfastest.main_utils.Constant;
 import com.bumbumapps.documentscannerfastest.utils.AdsUtils;
+import com.xiaopo.flying.sticker.DrawableSticker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +60,21 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
     private static final String TAG = "IDCardPreviewActivity";
 
     public AspectRatioLayout aspectRatioLayout;
+    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    Glide.with(getApplicationContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                            Constant.original = bitmap;
+                            stickerHolderView.addStickerView(new ImageStickerConfig(bitmap, StickerConfigInterface.STICKER_TYPE.IMAGE));
+                        }
+                    });
+                }
+                else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+
+            });
     protected Bitmap backSide;
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -65,20 +85,26 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
                 startActivityForResult(intent2, 14);
                 Constant.IdentifyActivity = "";
             } else if (Constant.IdentifyActivity.equals("IDCardGalleryActivity")) {
-                ImagePicker.with((Activity) IDCardPreviewActivity.this)
-                        .setStatusBarColor("#221F35")
-                        .setToolbarColor("#221F35")
-                        .setBackgroundColor("#ffffff")
-                        .setFolderMode(true)
-                        .setFolderTitle("Gallery")
-                        .setMultipleMode(true)
-                        .setShowNumberIndicator(true)
-                        .setAlwaysShowDoneButton(true)
-                        .setMaxSize(7)
-                        .setShowCamera(false)
-                        .setLimitMessage("You can select up to 7 images")
-                        .setRequestCode(100)
-                        .start();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                            .build());
+                }else {
+                    ImagePicker.with((Activity) IDCardPreviewActivity.this)
+                            .setStatusBarColor("#221F35")
+                            .setToolbarColor("#221F35")
+                            .setBackgroundColor("#ffffff")
+                            .setFolderMode(true)
+                            .setFolderTitle("Gallery")
+                            .setMultipleMode(true)
+                            .setShowNumberIndicator(true)
+                            .setAlwaysShowDoneButton(true)
+                            .setMaxSize(7)
+                            .setShowCamera(false)
+                            .setLimitMessage("You can select up to 7 images")
+                            .setRequestCode(100)
+                            .start();
+                }
                 Constant.IdentifyActivity = "";
             }
         }

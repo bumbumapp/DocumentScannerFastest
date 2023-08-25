@@ -16,6 +16,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +33,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -57,6 +61,7 @@ import com.bumbumapps.documentscannerfastest.main_utils.Constant;
 import com.bumbumapps.documentscannerfastest.models.BookModel;
 import com.bumbumapps.documentscannerfastest.models.DBModel;
 import com.bumbumapps.documentscannerfastest.utils.AdsUtils;
+import com.xiaopo.flying.sticker.DrawableSticker;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.util.FileUtils;
 
@@ -81,52 +86,86 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
     public static ArrayList<Bitmap> bitmapList = new ArrayList<>();
     public static ArrayList<BookModel> bookImgList = new ArrayList<>();
     public static ArrayList<Bitmap> idcardImgList = new ArrayList<>();
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    Glide.with(getApplicationContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                            if (Constant.original != null) {
+                                Constant.original.recycle();
+                                System.gc();
+                            }
+                            Constant.original = bitmap;
+                            Constant.IdentifyActivity = "CropDocumentActivity2";
+                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
+                        }
+                    });
+                }
+                else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+
+            });
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Constant.IdentifyActivity.equals("ScannerGalleryActivity")) {
-                ImagePicker.with((Activity) ScannerActivity.this)
-                        .setStatusBarColor("#221F35")
-                        .setToolbarColor("#221F35")
-                        .setBackgroundColor("#ffffff")
-                        .setFolderMode(true)
-                        .setFolderTitle("Gallery")
-                        .setMultipleMode(true)
-                        .setShowNumberIndicator(true)
-                        .setAlwaysShowDoneButton(true)
-                        .setMaxSize(1)
-                        .setShowCamera(false)
-                        .setLimitMessage("You can select up to 1 images")
-                        .setRequestCode(100)
-                        .start();
-                Constant.IdentifyActivity = "";
-            } else if (Constant.IdentifyActivity.equals("CropDocumentActivity2")) {
-                startActivity(new Intent(ScannerActivity.this, CropDocumentActivity.class));
-                Constant.IdentifyActivity = "";
-                finish();
-            } else if (Constant.IdentifyActivity.equals("IDCardPreviewActivity")) {
-                startActivity(new Intent(ScannerActivity.this, IDCardPreviewActivity.class));
-                Constant.IdentifyActivity = "";
-                finish();
-            } else if (Constant.IdentifyActivity.equals("SavedEditDocumentActivity3")) {
-                Intent intent2 = new Intent(ScannerActivity.this, SavedEditDocumentActivity.class);
-                intent2.putExtra("edit_doc_group_name", selected_group_name);
-                intent2.putExtra("current_doc_name", bookImgList.get(0).getPage_name());
-                intent2.putExtra("position", bookImgList.get(0).getPos());
-                intent2.putExtra("from", TAG);
-                startActivity(intent2);
-                Constant.IdentifyActivity = "";
-                finish();
-            } else if (Constant.IdentifyActivity.equals("UcropActivity")) {
-                UCrop.of(sourceUri, destinationUri).start((Activity) ScannerActivity.this, 69);
-                Constant.IdentifyActivity = "";
-            } else if (Constant.IdentifyActivity.equals("DocumentEditorActivity_Scanner")) {
-                Intent intent3 = new Intent(ScannerActivity.this, DocumentEditorActivity.class);
-                intent3.putExtra("TAG", "SavedDocumentActivity");
-                intent3.putExtra("scan_doc_group_name", selected_group_name);
-                intent3.putExtra("current_doc_name", current_docs_name);
-                startActivity(intent3);
-                finish();
+            switch (Constant.IdentifyActivity) {
+                case "ScannerGalleryActivity":
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        pickMedia.launch(new PickVisualMediaRequest.Builder()
+                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                                .build());
+                    }else {
+                        ImagePicker.with((Activity) ScannerActivity.this)
+                                .setStatusBarColor("#221F35")
+                                .setToolbarColor("#221F35")
+                                .setBackgroundColor("#ffffff")
+                                .setFolderMode(true)
+                                .setFolderTitle("Gallery")
+                                .setMultipleMode(true)
+                                .setShowNumberIndicator(true)
+                                .setAlwaysShowDoneButton(true)
+                                .setMaxSize(1)
+                                .setShowCamera(false)
+                                .setLimitMessage("You can select up to 1 images")
+                                .setRequestCode(100)
+                                .start();
+                    }
+                    Constant.IdentifyActivity = "";
+                    break;
+                case "CropDocumentActivity2":
+                    startActivity(new Intent(ScannerActivity.this, CropDocumentActivity.class));
+                    Constant.IdentifyActivity = "";
+                    finish();
+                    break;
+                case "IDCardPreviewActivity":
+                    startActivity(new Intent(ScannerActivity.this, IDCardPreviewActivity.class));
+                    Constant.IdentifyActivity = "";
+                    finish();
+                    break;
+                case "SavedEditDocumentActivity3":
+                    Intent intent2 = new Intent(ScannerActivity.this, SavedEditDocumentActivity.class);
+                    intent2.putExtra("edit_doc_group_name", selected_group_name);
+                    intent2.putExtra("current_doc_name", bookImgList.get(0).getPage_name());
+                    intent2.putExtra("position", bookImgList.get(0).getPos());
+                    intent2.putExtra("from", TAG);
+                    startActivity(intent2);
+                    Constant.IdentifyActivity = "";
+                    finish();
+                    break;
+                case "UcropActivity":
+                    UCrop.of(sourceUri, destinationUri).start((Activity) ScannerActivity.this, 69);
+                    Constant.IdentifyActivity = "";
+                    break;
+                case "DocumentEditorActivity_Scanner":
+                    Intent intent3 = new Intent(ScannerActivity.this, DocumentEditorActivity.class);
+                    intent3.putExtra("TAG", "SavedDocumentActivity");
+                    intent3.putExtra("scan_doc_group_name", selected_group_name);
+                    intent3.putExtra("current_doc_name", current_docs_name);
+                    startActivity(intent3);
+                    finish();
+                    break;
             }
         }
     };

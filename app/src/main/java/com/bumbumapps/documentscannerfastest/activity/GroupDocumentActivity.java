@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,48 +67,87 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
     private static final String TAG = "GroupDocumentActivity";
     public static ArrayList<DBModel> currentGroupList = new ArrayList<>();
     public static String current_group;
-    public static GroupDocumentActivity groupDocumentActivity;
+    private AdView adview;
 
+    public static GroupDocumentActivity groupDocumentActivity;
+    final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    Glide.with(getApplicationContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                            if (Constant.original != null) {
+                                Constant.original.recycle();
+                                System.gc();
+                            }
+                            Constant.original = bitmap;
+                            Constant.IdentifyActivity = "CropDocumentActivity4";
+                            AdsUtils.showGoogleInterstitialAd(GroupDocumentActivity.this, false);
+                        }
+                    });
+                }
+                else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+
+                if (adview!=null){
+                    adview.setVisibility(View.VISIBLE);
+                }
+            });
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Constant.IdentifyActivity.equals("PDFViewerActivity2")) {
-                Intent intent2 = new Intent(GroupDocumentActivity.this, PDFViewerActivity.class);
-                intent2.putExtra("title", selected_group_name + ".pdf");
-                intent2.putExtra("pdf_path", pdfUri.toString());
-                startActivity(intent2);
-                Constant.IdentifyActivity = "";
-            } else if (Constant.IdentifyActivity.equals("DocumentGalleryActivity")) {
-                ImagePicker.with((Activity) GroupDocumentActivity.this)
-                        .setStatusBarColor("#221F35")
-                        .setToolbarColor("#221F35")
-                        .setBackgroundColor("#ffffff")
-                        .setFolderMode(true)
-                        .setFolderTitle("Gallery")
-                        .setMultipleMode(true)
-                        .setShowNumberIndicator(true)
-                        .setAlwaysShowDoneButton(true)
-                        .setMaxSize(1)
-                        .setShowCamera(false)
-                        .setLimitMessage("You can select up to 1 images")
-                        .setRequestCode(100)
-                        .start();
-                Constant.IdentifyActivity = "";
-            } else if (Constant.IdentifyActivity.equals("CropDocumentActivity4")) {
-                startActivity(new Intent(GroupDocumentActivity.this, CropDocumentActivity.class));
-                Constant.IdentifyActivity = "";
-            } else if (Constant.IdentifyActivity.equals("ScannerActivity2")) {
-                startActivity(new Intent(GroupDocumentActivity.this, ScannerActivity.class));
-                Constant.IdentifyActivity = "";
-                finish();
-            } else if (Constant.IdentifyActivity.equals("SavedDocumentPreviewActivity")) {
-                Intent intent3 = new Intent(GroupDocumentActivity.this, SavedDocumentPreviewActivity.class);
-                intent3.putExtra("edit_doc_group_name", GroupDocumentActivity.current_group);
-                intent3.putExtra("current_doc_name", GroupDocumentActivity.currentGroupList.get(selected_position).getGroup_doc_name());
-                intent3.putExtra("position", selected_position);
-                intent3.putExtra("from", GroupDocumentActivity.TAG);
-                startActivity(intent3);
-                Constant.IdentifyActivity = "";
+            switch (Constant.IdentifyActivity) {
+                case "PDFViewerActivity2":
+                    Intent intent2 = new Intent(GroupDocumentActivity.this, PDFViewerActivity.class);
+                    intent2.putExtra("title", selected_group_name + ".pdf");
+                    intent2.putExtra("pdf_path", pdfUri.toString());
+                    startActivity(intent2);
+                    Constant.IdentifyActivity = "";
+                    break;
+                case "DocumentGalleryActivity":
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        pickMedia.launch(new PickVisualMediaRequest.Builder()
+                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                                .build());
+                        if (adview!=null){
+                            adview.setVisibility(View.GONE);
+                        }
+                    }else {
+                        ImagePicker.with((Activity) GroupDocumentActivity.this)
+                                .setStatusBarColor("#221F35")
+                                .setToolbarColor("#221F35")
+                                .setBackgroundColor("#ffffff")
+                                .setFolderMode(true)
+                                .setFolderTitle("Gallery")
+                                .setMultipleMode(true)
+                                .setShowNumberIndicator(true)
+                                .setAlwaysShowDoneButton(true)
+                                .setMaxSize(1)
+                                .setShowCamera(false)
+                                .setLimitMessage("You can select up to 1 images")
+                                .setRequestCode(100)
+                                .start();
+                    }
+                    Constant.IdentifyActivity = "";
+                    break;
+                case "CropDocumentActivity4":
+                    startActivity(new Intent(GroupDocumentActivity.this, CropDocumentActivity.class));
+                    Constant.IdentifyActivity = "";
+                    break;
+                case "ScannerActivity2":
+                    startActivity(new Intent(GroupDocumentActivity.this, ScannerActivity.class));
+                    Constant.IdentifyActivity = "";
+                    finish();
+                    break;
+                case "SavedDocumentPreviewActivity":
+                    Intent intent3 = new Intent(GroupDocumentActivity.this, SavedDocumentPreviewActivity.class);
+                    intent3.putExtra("edit_doc_group_name", GroupDocumentActivity.current_group);
+                    intent3.putExtra("current_doc_name", GroupDocumentActivity.currentGroupList.get(selected_position).getGroup_doc_name());
+                    intent3.putExtra("position", selected_position);
+                    intent3.putExtra("from", GroupDocumentActivity.TAG);
+                    startActivity(intent3);
+                    Constant.IdentifyActivity = "";
+                    break;
             }
         }
     };
@@ -129,7 +172,6 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
     public String singleDoc;
 
     public TextView tv_title;
-    private AdView adview;
 
 
     @Override
