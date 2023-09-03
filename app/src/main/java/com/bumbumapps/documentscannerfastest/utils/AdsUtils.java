@@ -44,7 +44,7 @@ public class AdsUtils {
 
         InterstitialAd.load(
                 context,
-                "ca-app-pub-8444865753152507/1078663865",
+                context.getString(R.string.intersitial_id),
                 new AdRequest.Builder().build(),
                 new InterstitialAdLoadCallback() {
                     @Override

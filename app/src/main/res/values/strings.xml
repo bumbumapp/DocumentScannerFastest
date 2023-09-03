@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">Doc scanner</string>
+    <string name="app_name">Doc scanner &amp; PDF maker</string>
 
 
 
-    <string name="admob_banner_id">ca-app-pub-8444865753152507/8410358976</string>
 
 
     <string name="academic_docs_empty">No Academic Docs Scanned Yet.</string>

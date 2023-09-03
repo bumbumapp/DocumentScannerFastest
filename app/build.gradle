@@ -13,8 +13,8 @@ android {
         applicationId "com.bumbumapps.documentscannerfastest"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 13
-        versionName "4.2.7"
+        versionCode 14
+        versionName "4.2.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
