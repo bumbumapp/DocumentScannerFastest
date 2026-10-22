@@ -1,0 +1,23 @@
+// Small Apache-2.0 / MIT view libraries that were only published to JCenter (shut down):
+// androidwm-light 0.1.2, aspectratio 0.3.0, signature-view 1.2, colorseekbar 1.0.2 (ported to Java).
+apply plugin: 'com.android.library'
+
+android {
+    lint {
+        abortOnError false
+    }
+    namespace 'com.bumbumapps.vendored'
+    compileSdk 36
+    defaultConfig {
+        minSdk 24
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation 'androidx.core:core:1.17.0'
+}

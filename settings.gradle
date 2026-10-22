@@ -1,4 +1,5 @@
 include ':sticker'
 include ':scanlibrary'
 include ':app'
+include ':vendored'
 rootProject.name = "CamScanner"

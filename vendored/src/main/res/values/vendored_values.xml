@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AspectRatioLayout">
+        <attr format="float" name="arl_widthRatio"/>
+        <attr format="float" name="arl_heightRatio"/>
+    </declare-styleable>
+    <declare-styleable name="ColorSeekBar">
+        <attr format="reference" name="colorSeeds"/>
+        <attr format="dimension" name="cornerRadius"/>
+        <attr format="dimension" name="barHeight"/>
+        <attr format="dimension" name="thumbBorder"/>
+        <attr format="color" name="thumbBorderColor"/>
+    </declare-styleable>
+    <color name="penRoyalBlue">#4169e1</color>
+    <color name="white">#ffffff</color>
+    <declare-styleable name="signature">
+        <attr format="boolean" name="enableSignature"/>
+        <attr format="dimension" name="penSize"/>
+        <attr format="color" name="penColor"/>
+        <attr format="color" name="backgroundColor"/>
+    </declare-styleable>
+    <dimen name="pen_size">3dp</dimen>
+</resources>
