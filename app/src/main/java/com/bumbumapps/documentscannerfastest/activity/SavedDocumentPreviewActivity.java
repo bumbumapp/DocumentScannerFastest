@@ -116,13 +116,13 @@ public class SavedDocumentPreviewActivity extends BaseActivity implements View.O
     @Override
     public void onResume() {
         super.onResume();
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_SavedPreview"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_SavedPreview"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".PDFViewerActivity_Preview"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".PDFViewerActivity_Preview"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".NoteActivity_Preview"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".NoteActivity_Preview"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".ImageToTextActivity_Preview"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".ImageToTextActivity_Preview"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override

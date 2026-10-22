@@ -53,8 +53,6 @@ import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.itextpdf.text.html.HtmlTags;
 import com.kyanogen.signatureview.SignatureView;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.bumbumapps.documentscannerfastest.R;
 import com.bumbumapps.documentscannerfastest.adapter.ColorEffectAdapter;
 import com.bumbumapps.documentscannerfastest.adapter.ColorFilterAdapter;
@@ -291,7 +289,7 @@ public class DocumentEditorActivity extends BaseActivity implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".SavedEditDocumentActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".SavedEditDocumentActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -534,26 +532,9 @@ public class DocumentEditorActivity extends BaseActivity implements View.OnClick
                 iv_done.setVisibility(View.INVISIBLE);
                 return;
             case PICTURE:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    pickMedia.launch(new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                            .build());
-                }else {
-                    ImagePicker.with((Activity) this)
-                            .setStatusBarColor("#221F35")
-                            .setToolbarColor("#221F35")
-                            .setBackgroundColor("#ffffff")
-                            .setFolderMode(true)
-                            .setFolderTitle("Gallery")
-                            .setMultipleMode(true)
-                            .setShowNumberIndicator(true)
-                            .setAlwaysShowDoneButton(true)
-                            .setMaxSize(1)
-                            .setShowCamera(false)
-                            .setLimitMessage("You can select up to 1 images")
-                            .setRequestCode(100)
-                            .start();
-                }
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
                 return;
             case SIGNATURE:
                 iv_create_signature.setImageResource(R.drawable.ic_create_sig_selection);
@@ -606,33 +587,7 @@ public class DocumentEditorActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onActivityResult(int i, int i2, Intent intent) {
-        if (ImagePicker.shouldHandleResult(i, i2, intent, 100)) {
-            Iterator<Image> it = ImagePicker.getImages(intent).iterator();
-            while (it.hasNext()) {
-                Image next = it.next();
-                if (Build.VERSION.SDK_INT >= 29) {
-                    Glide.with(getApplicationContext()).asDrawable().load(next.getUri()).into(new SimpleTarget<Drawable>() {
-                        public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
-                            stickerView.addSticker(new DrawableSticker(drawable), 1);
-                            ly_edit_tools.setVisibility(View.INVISIBLE);
-                            iv_done.setVisibility(View.INVISIBLE);
-                            documentEditorActivity.slideUpAnimation(documentEditorActivity.ly_opacity);
-                            sb_opacity.setProgress(255);
-                        }
-                    });
-                } else {
-                    Glide.with(getApplicationContext()).asDrawable().load(next.getPath()).into(new SimpleTarget<Drawable>() {
-                        public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
-                            stickerView.addSticker(new DrawableSticker(drawable), 1);
-                            ly_edit_tools.setVisibility(View.INVISIBLE);
-                            iv_done.setVisibility(View.INVISIBLE);
-                            documentEditorActivity.slideUpAnimation(documentEditorActivity.ly_opacity);
-                            sb_opacity.setProgress(255);
-                        }
-                    });
-                }
-            }
-        }
+        
         super.onActivityResult(i, i2, intent);
     }
 

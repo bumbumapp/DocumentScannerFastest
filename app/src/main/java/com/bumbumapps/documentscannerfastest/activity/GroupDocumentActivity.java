@@ -43,11 +43,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.itextpdf.text.pdf.PdfObject;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.bumbumapps.documentscannerfastest.R;
 import com.bumbumapps.documentscannerfastest.adapter.GroupDocAdapter;
 import com.bumbumapps.documentscannerfastest.db.DBHelper;
@@ -67,7 +64,7 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
     private static final String TAG = "GroupDocumentActivity";
     public static ArrayList<DBModel> currentGroupList = new ArrayList<>();
     public static String current_group;
-    private AdView adview;
+    private android.view.ViewGroup adview;
 
     public static GroupDocumentActivity groupDocumentActivity;
     final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
@@ -105,28 +102,11 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
                     Constant.IdentifyActivity = "";
                     break;
                 case "DocumentGalleryActivity":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                                .build());
-                        if (adview!=null){
-                            adview.setVisibility(View.GONE);
-                        }
-                    }else {
-                        ImagePicker.with((Activity) GroupDocumentActivity.this)
-                                .setStatusBarColor("#221F35")
-                                .setToolbarColor("#221F35")
-                                .setBackgroundColor("#ffffff")
-                                .setFolderMode(true)
-                                .setFolderTitle("Gallery")
-                                .setMultipleMode(true)
-                                .setShowNumberIndicator(true)
-                                .setAlwaysShowDoneButton(true)
-                                .setMaxSize(1)
-                                .setShowCamera(false)
-                                .setLimitMessage("You can select up to 1 images")
-                                .setRequestCode(100)
-                                .start();
+                    pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build());
+                    if (adview!=null){
+                        adview.setVisibility(View.GONE);
                     }
                     Constant.IdentifyActivity = "";
                     break;
@@ -180,15 +160,15 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
         new setGroupDocAdapter().execute(new String[0]);
         super.onResume();
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".PDFViewerActivity2"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".PDFViewerActivity2"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentGalleryActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentGalleryActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity4"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity4"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity2"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity2"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".SavedDocumentPreviewActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".SavedDocumentPreviewActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -337,37 +317,7 @@ public class GroupDocumentActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onActivityResult(int i, int i2, Intent intent) {
-        if (ImagePicker.shouldHandleResult(i, i2, intent, 100)) {
-            Iterator<Image> it = ImagePicker.getImages(intent).iterator();
-            while (it.hasNext()) {
-                Image next = it.next();
-                if (Build.VERSION.SDK_INT >= 29) {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getUri()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity4";
-                            AdsUtils.showGoogleInterstitialAd(GroupDocumentActivity.this, false);
-                        }
-                    });
-                } else {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getPath()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity4";
-                            AdsUtils.showGoogleInterstitialAd(GroupDocumentActivity.this, false);
-                        }
-                    });
-                }
-            }
-        }
+        
         super.onActivityResult(i, i2, intent);
     }
 

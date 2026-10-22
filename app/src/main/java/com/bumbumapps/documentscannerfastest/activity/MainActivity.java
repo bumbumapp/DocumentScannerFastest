@@ -57,7 +57,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.itextpdf.text.pdf.PdfObject;
@@ -67,8 +66,7 @@ import com.bumbumapps.documentscannerfastest.db.DBHelper;
 import com.bumbumapps.documentscannerfastest.main_utils.Constant;
 import com.bumbumapps.documentscannerfastest.models.DBModel;
 import com.bumbumapps.documentscannerfastest.utils.AdsUtils;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
+import com.bumbumapps.documentscannerfastest.utils.PermissionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,35 +82,18 @@ import java.util.Map;
 public class MainActivity extends BaseActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "MainActivity";
     public static MainActivity mainActivity;
-    private AdView adview;
+    private android.view.ViewGroup adview;
     protected AllGroupAdapter allGroupAdapter;
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (Constant.IdentifyActivity) {
                 case "MainGalleryActivity":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                                .build());
-                        if (adview != null) {
-                            adview.setVisibility(View.GONE);
-                        }
-                    } else {
-                        ImagePicker.with((Activity) MainActivity.this)
-                                .setStatusBarColor("#221F35")
-                                .setToolbarColor("#221F35")
-                                .setBackgroundColor("#ffffff")
-                                .setFolderMode(true)
-                                .setFolderTitle("Gallery")
-                                .setMultipleMode(true)
-                                .setShowNumberIndicator(true)
-                                .setAlwaysShowDoneButton(true)
-                                .setMaxSize(1)
-                                .setShowCamera(false)
-                                .setLimitMessage("You can select up to 1 images")
-                                .setRequestCode(100)
-                                .start();
+                    pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build());
+                    if (adview != null) {
+                        adview.setVisibility(View.GONE);
                     }
                     Constant.IdentifyActivity = "";
                     break;
@@ -197,13 +178,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.onResume();
 
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".MainGalleryActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".MainGalleryActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".GroupDocumentActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".GroupDocumentActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -335,23 +316,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 return;
 
             case R.id.iv_group_camera:
-                String[] permissions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissions = new String[]{
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_MEDIA_IMAGES,
-                    };
-
-                } else {
-                    permissions = new String[]{
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-
-                    };
-
-                }
-                ActivityCompat.requestPermissions(MainActivity.this, permissions, 1);
+                requestOrStart(1, true);
                 return;
             case R.id.iv_more:
                 PopupMenu popupMenu = new PopupMenu(this, view);
@@ -450,23 +415,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 new setAllGroupAdapter().execute(new String[0]);
                 break;
             case R.id.import_from_gallery:
-                String[] permissions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissions = new String[]{
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_MEDIA_IMAGES,
-                    };
-
-                } else {
-                    permissions = new String[]{
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-
-                    };
-
-                }
-                ActivityCompat.requestPermissions(MainActivity.this, permissions, 2);
+                requestOrStart(2, false);
                 break;
             case R.id.list_view:
                 editor = preferences.edit();
@@ -527,39 +476,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
     @Override
     public void onActivityResult(int i, int i2, Intent intent) {
-        if (ImagePicker.shouldHandleResult(i, i2, intent, 100)) {
-            Iterator<Image> it = ImagePicker.getImages(intent).iterator();
-            while (it.hasNext()) {
-                Image next = it.next();
-                if (Build.VERSION.SDK_INT >= 29) {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getUri()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.current_camera_view = "Document";
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity";
-                            AdsUtils.showGoogleInterstitialAd(MainActivity.this, false);
-                        }
-                    });
-                } else {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getPath()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.current_camera_view = "Document";
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity";
-                            AdsUtils.showGoogleInterstitialAd(MainActivity.this, false);
-                        }
-                    });
-                }
-            }
-        }
+        
         super.onActivityResult(i, i2, intent);
     }
 
@@ -567,31 +484,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int permissionCount = 0;
-        for (int i = 0; i < permissions.length; i++) {
-            String permission = permissions[i];
-            int grantResult = grantResults[i];
-            if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                Log.d("permissons","permissons "+permission);
-                permissionCount++;
-                if (permissionCount == permissions.length-1) {
-                    if (requestCode == 1) {
-                        Constant.inputType = "Group";
-                        Constant.IdentifyActivity = "ScannerActivity";
-                        AdsUtils.showGoogleInterstitialAd(MainActivity.this,false);
-                    } else if (requestCode == 2) {
-                        Constant.inputType = "Group";
-                        Constant.IdentifyActivity = "MainGalleryActivity";
-                        AdsUtils.showGoogleInterstitialAd(MainActivity.this,false);
-                    }
-                }
-            } else {
-                ActivityCompat.shouldShowRequestPermissionRationale(this, permission);
-            }
+        if ((requestCode == 1 || requestCode == 2) && PermissionUtils.allGranted(grantResults)) {
+            startInput(requestCode);
         }
+    }
 
+    /** Requests only the missing permissions; starts camera (1) or gallery (2) input when all are granted. */
+    private void requestOrStart(int requestCode, boolean needCamera) {
+        String[] missing = PermissionUtils.missing(this, needCamera);
+        if (missing.length == 0) {
+            startInput(requestCode);
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, missing, requestCode);
+        }
+    }
 
-}
+    private void startInput(int requestCode) {
+        Constant.inputType = "Group";
+        Constant.IdentifyActivity = requestCode == 1 ? "ScannerActivity" : "MainGalleryActivity";
+        AdsUtils.showGoogleInterstitialAd(MainActivity.this, false);
+    }
 
 
 

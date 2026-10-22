@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumbumapps.documentscannerfastest.utils.AdsUtils;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -33,7 +32,7 @@ public class ImageToTextActivity extends BaseActivity implements View.OnClickLis
     private ImageView iv_preview_img;
     protected ImageView iv_rescan_img;
     protected ImageView iv_share_txt;
-    private AdView adView;
+    private android.view.ViewGroup adView;
     public ProgressDialog progressDialog;
 
     public TextView tv_ocr_txt;

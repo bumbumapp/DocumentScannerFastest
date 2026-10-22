@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.gms.ads.AdView;
 import com.scanlibrary.ScanActivity;
 import com.bumbumapps.documentscannerfastest.R;
 import com.bumbumapps.documentscannerfastest.db.DBHelper;
@@ -67,14 +66,14 @@ public class CurrentFilterActivity extends BaseActivity implements View.OnClickL
     public String selected_group_name;
 
     public Bitmap tempBitmap;
-    private AdView adView;
+    private android.view.ViewGroup adView;
 
     @Override
     public void onResume() {
         super.onResume();
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".SavedDocumentActivity"));
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardPreviewActivity2"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".SavedDocumentActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardPreviewActivity2"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override

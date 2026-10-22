@@ -19,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 
-import com.google.android.gms.ads.AdView;
 import com.scanlibrary.ScanActivity;
 import com.bumbumapps.documentscannerfastest.R;
 import com.bumbumapps.documentscannerfastest.db.DBHelper;
@@ -61,7 +60,7 @@ public class CropDocumentActivity extends BaseActivity implements View.OnClickLi
     };
 
     public String current_docs_name;
-    private AdView adView;
+    private android.view.ViewGroup adView;
     public DBHelper dbHelper;
     protected ImageView iv_back;
     protected TextView iv_Rotate_Doc;
@@ -89,9 +88,9 @@ public class CropDocumentActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_Crop"));
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".CurrentFilterActivity"));
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity_Retake"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_Crop"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".CurrentFilterActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerActivity_Retake"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -119,7 +118,7 @@ public class CropDocumentActivity extends BaseActivity implements View.OnClickLi
 
         iv_add_new_scan = (ImageView) findViewById(R.id.iv_add_new_scan);
         seekBarBrightness = (SeekBar) findViewById(R.id.seekBarBrightness);
-        adView=(AdView)findViewById(R.id.adView);
+        adView=(android.view.ViewGroup)findViewById(R.id.adView);
         iv_back = (ImageView) findViewById(R.id.iv_back);
         iv_edit = (ImageView) findViewById(R.id.iv_edit);
         iv_done = (ImageView) findViewById(R.id.iv_done);

@@ -45,8 +45,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
@@ -112,26 +110,9 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
         public void onReceive(Context context, Intent intent) {
             switch (Constant.IdentifyActivity) {
                 case "ScannerGalleryActivity":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                                .build());
-                    }else {
-                        ImagePicker.with((Activity) ScannerActivity.this)
-                                .setStatusBarColor("#221F35")
-                                .setToolbarColor("#221F35")
-                                .setBackgroundColor("#ffffff")
-                                .setFolderMode(true)
-                                .setFolderTitle("Gallery")
-                                .setMultipleMode(true)
-                                .setShowNumberIndicator(true)
-                                .setAlwaysShowDoneButton(true)
-                                .setMaxSize(1)
-                                .setShowCamera(false)
-                                .setLimitMessage("You can select up to 1 images")
-                                .setRequestCode(100)
-                                .start();
-                    }
+                    pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build());
                     Constant.IdentifyActivity = "";
                     break;
                 case "CropDocumentActivity2":
@@ -244,17 +225,17 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
             ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, 1);
         }
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerGalleryActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".ScannerGalleryActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity2"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".CropDocumentActivity2"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardPreviewActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardPreviewActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".SavedEditDocumentActivity3"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".SavedEditDocumentActivity3"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".UcropActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".UcropActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_Scanner"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_Scanner"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -1044,39 +1025,7 @@ public class ScannerActivity extends BaseActivity implements ActivityCompat.OnRe
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (ImagePicker.shouldHandleResult(requestCode, resultCode, intent, 100)) {
-            Iterator<Image> it = ImagePicker.getImages(intent).iterator();
-            while (it.hasNext()) {
-                Image next = it.next();
-                if (Build.VERSION.SDK_INT >= 29) {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getUri()).into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity2";
-                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
-                        }
-                    });
-                } else {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getPath()).into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            if (Constant.original != null) {
-                                Constant.original.recycle();
-                                System.gc();
-                            }
-                            Constant.original = bitmap;
-                            Constant.IdentifyActivity = "CropDocumentActivity2";
-                            AdsUtils.showGoogleInterstitialAd(ScannerActivity.this, true);
-                        }
-                    });
-                }
-            }
-        }
+        
         if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
             if (sourceUri != null) {
                 getContentResolver().delete(sourceUri, (String) null, (String[]) null);

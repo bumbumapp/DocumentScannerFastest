@@ -20,6 +20,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        registerActivityLifecycleCallbacks(new EdgeToEdgeCallbacks());
 
         SmartCropper.buildImageDetector(this);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);

@@ -35,8 +35,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.bumbumapps.documentscannerfastest.R;
 import com.bumbumapps.documentscannerfastest.db.DBHelper;
@@ -85,26 +83,9 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
                 startActivityForResult(intent2, 14);
                 Constant.IdentifyActivity = "";
             } else if (Constant.IdentifyActivity.equals("IDCardGalleryActivity")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    pickMedia.launch(new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                            .build());
-                }else {
-                    ImagePicker.with((Activity) IDCardPreviewActivity.this)
-                            .setStatusBarColor("#221F35")
-                            .setToolbarColor("#221F35")
-                            .setBackgroundColor("#ffffff")
-                            .setFolderMode(true)
-                            .setFolderTitle("Gallery")
-                            .setMultipleMode(true)
-                            .setShowNumberIndicator(true)
-                            .setAlwaysShowDoneButton(true)
-                            .setMaxSize(7)
-                            .setShowCamera(false)
-                            .setLimitMessage("You can select up to 7 images")
-                            .setRequestCode(100)
-                            .start();
-                }
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
                 Constant.IdentifyActivity = "";
             }
         }
@@ -145,9 +126,9 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
     public void onResume() {
         super.onResume();
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_IDCard"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".DocumentEditorActivity_IDCard"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardGalleryActivity"));
+        androidx.core.content.ContextCompat.registerReceiver(this, broadcastReceiver, new IntentFilter(getPackageName() + ".IDCardGalleryActivity"), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -300,27 +281,7 @@ public class IDCardPreviewActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onActivityResult(int i, int i2, Intent intent) {
         super.onActivityResult(i, i2, intent);
-        if (ImagePicker.shouldHandleResult(i, i2, intent, 100)) {
-            Iterator<Image> it = ImagePicker.getImages(intent).iterator();
-            while (it.hasNext()) {
-                Image next = it.next();
-                if (Build.VERSION.SDK_INT >= 29) {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getUri()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            Constant.original = bitmap;
-                            stickerHolderView.addStickerView(new ImageStickerConfig(bitmap, StickerConfigInterface.STICKER_TYPE.IMAGE));
-                        }
-                    });
-                } else {
-                    Glide.with(getApplicationContext()).asBitmap().load(next.getPath()).into(new SimpleTarget<Bitmap>() {
-                        public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                            Constant.original = bitmap;
-                            stickerHolderView.addStickerView(new ImageStickerConfig(bitmap, StickerConfigInterface.STICKER_TYPE.IMAGE));
-                        }
-                    });
-                }
-            }
-        }
+        
         if (i2 == -1 && i == 14) {
             stickerHolderView.setEditImageOnSticker(Constant.original);
         }

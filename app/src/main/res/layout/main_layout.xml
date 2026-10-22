@@ -220,12 +220,10 @@
     </LinearLayout>
 
 
-        <com.google.android.gms.ads.AdView
+        <FrameLayout
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            app:adSize="FULL_BANNER"
-            app:adUnitId="@string/admob_banner_id" />
+            android:layout_alignParentBottom="true" />
 
 </LinearLayout>
