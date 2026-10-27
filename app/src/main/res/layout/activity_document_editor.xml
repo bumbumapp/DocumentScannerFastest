@@ -637,7 +637,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/fg_color"
+        android:background="@color/white"
         android:visibility="gone">
 
 
