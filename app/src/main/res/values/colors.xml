@@ -8,32 +8,32 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="icons_color">#FFC107</color>
+    <color name="icons_color">#25C4A4</color>
     <color name="icons_color_white">#FFFFFF</color>
-    <color name="dark_color">#221F35</color>
-    <color name="bg_color">#373553</color>
-    <color name="bg_color1">#373553</color>
+    <color name="dark_color">#131418</color>
+    <color name="bg_color">#1E2026</color>
+    <color name="bg_color1">#1E2026</color>
     <color name="black_translucent">#5025c4a4</color>
     <color name="colorAccent">#25c4a4</color>
     <color name="colorPrimary">#25c4a4</color>
     <color name="colorPrimaryDark">#25c4a4</color>
 
-    <color name="editor_light_color">#373553</color>
+    <color name="editor_light_color">#1E2026</color>
     <color name="error_color_material_dark">#ff7043</color>
     <color name="error_color_material_light">#ff5722</color>
-    <color name="fg_color">#373553</color>
+    <color name="fg_color">#1E2026</color>
     <color name="dark_blue">#1C009688</color>
-    <color name="light_bg_color">#373553</color>
-    <color name="light_txt_color">#FFC107</color>
+    <color name="light_bg_color">#1E2026</color>
+    <color name="light_txt_color">#25C4A4</color>
     <color name="orange">#ffff900d</color>
 
     <color name="selected_txt_color">#000000</color>
     <color name="txt_color">#FFFFFF</color>
 
 
-    <color name="sticker_border">#373553</color>
+    <color name="sticker_border">#2A2D35</color>
 
-    <color name="tab_indicator_color">#FFC107</color>
+    <color name="tab_indicator_color">#25C4A4</color>
     <color name="tab_unselected_txt_color">#585d64</color>
     <color name="toolbar_color">#25c4a4</color>
     <color name="transparent">#00000000</color>
@@ -42,7 +42,7 @@
 
     <color name="yellow">#80ffff01</color>
 
-    <color name="viewfinder_border">#373553</color>
+    <color name="viewfinder_border">#2A2D35</color>
     <color name="viewfinder_laser">#ffcc0000</color>
     <color name="viewfinder_mask">#b3000000</color>
 
@@ -50,7 +50,7 @@
     <color name="darkpink">#ff0a91</color>
 
     <color name="subscribe_dialog_one_text">#a0a0a0</color>
-    <color name="dialog_bg_color">#221F35</color>
+    <color name="dialog_bg_color">#1A1C21</color>
 
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>
     <color name="ucrop_color_statusbar">@color/colorPrimary</color>
@@ -62,4 +62,6 @@
 <!--    <color name="ucrop_color_black">#000</color>-->
 <!--    <color name="ucrop_color_white">#FFF</color>-->
 
+    <!-- Overrides scanlibrary blue: one teal accent across the app (2026 refresh). -->
+    <color name="blue">#25C4A4</color>
 </resources>

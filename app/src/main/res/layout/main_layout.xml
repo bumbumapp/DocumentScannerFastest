@@ -33,9 +33,10 @@
                     android:layout_marginEnd="@dimen/_5sdp"
                     android:fontFamily="@font/inter_bold"
                     android:singleLine="true"
+                    android:letterSpacing="-0.02"
                     android:text="Document Scanner"
-                    android:textColor="@color/blue"
-                    android:textSize="@dimen/_16sdp" />
+                    android:textColor="@color/icons_color_white"
+                    android:textSize="@dimen/_18sdp" />
 
 
                 <ImageView
