@@ -30,7 +30,7 @@ public class AdsUtils {
     }
 
     /**
-     * Shows the preloaded interstitial (frequency capped to one per 60 s) and then continues the
+     * Shows the preloaded interstitial (frequency capped by AdsHelper: one per 8 min) and then continues the
      * navigation; navigation also continues when no ad is shown or it fails to show.
      */
     public static void showGoogleInterstitialAd(Activity activity, boolean isShowAd) {
