@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_130sdp"
         android:layout_margin="@dimen/_6sdp"
-        app:cardBackgroundColor="@color/fg_color"
-        app:cardCornerRadius="@dimen/_6sdp">
+        app:cardBackgroundColor="@color/bento_card"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="20dp">
 
         <RelativeLayout
             android:id="@+id/rl_group"
@@ -53,7 +54,7 @@
                         android:fontFamily="@font/inter_medium"
                         android:singleLine="true"
                         android:text="Meeting Notes"
-                        android:textColor="@color/txt_color"
+                        android:textColor="@color/bento_text"
                         android:textSize="@dimen/_12sdp" />
 
                     <TextView
@@ -65,7 +66,7 @@
                         android:maxLength="11"
                         android:singleLine="true"
                         android:text="2020-08-14  10.03 PM"
-                        android:textColor="@color/unselected_txt_color"
+                        android:textColor="@color/bento_muted"
                         android:textSize="@dimen/_10sdp" />
                 </LinearLayout>
 
@@ -79,7 +80,8 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:paddingBottom="@dimen/_10sdp"
-                    android:src="@drawable/ic_more" />
+                    android:src="@drawable/ic_more"
+                app:tint="@color/bento_muted" />
             </RelativeLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

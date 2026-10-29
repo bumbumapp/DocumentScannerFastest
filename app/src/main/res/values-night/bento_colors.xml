@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bento_ground">#0D0F16</color>
+    <color name="bento_card">#171A23</color>
+    <color name="bento_text">#F2F4F8</color>
+    <color name="bento_muted">#A4AABA</color>
+    <color name="bento_accent">#12A587</color>
+    <color name="bento_on_accent">#FFFFFF</color>
+    <color name="bento_tile_photos_bg">#241C3D</color>
+    <color name="bento_tile_photos_fg">#B9A4FF</color>
+    <color name="bento_tile_folder_bg">#33280F</color>
+    <color name="bento_tile_folder_fg">#FFC24A</color>
+    <bool name="bento_light_bars">false</bool>
+</resources>

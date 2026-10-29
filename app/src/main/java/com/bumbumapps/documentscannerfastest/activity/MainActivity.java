@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected ActionBarDrawerToggle toggle;
 
     public TextView tv_empty;
-    private ImageView iv_folder;
+    private View iv_folder;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -225,7 +225,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void init() {
 
         adview = findViewById(R.id.adView);
-        iv_folder = (ImageView) findViewById(R.id.iv_folder);
+        iv_folder = findViewById(R.id.iv_folder);
+        int hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
+        ((TextView) findViewById(R.id.tv_greeting)).setText(hour >= 5 && hour < 12 ? R.string.bento_greeting_morning
+                : hour < 18 && hour >= 12 ? R.string.bento_greeting_afternoon : R.string.bento_greeting_evening);
         iv_search = (ImageView) findViewById(R.id.iv_search);
         iv_more = (ImageView) findViewById(R.id.iv_more);
         rl_search_bar = (RelativeLayout) findViewById(R.id.rl_search_bar);
@@ -316,7 +319,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 return;
 
             case R.id.iv_group_camera:
+            case R.id.hero_scan:
                 requestOrStart(1, true);
+                return;
+            case R.id.tile_import:
+                requestOrStart(2, false);
                 return;
             case R.id.iv_more:
                 PopupMenu popupMenu = new PopupMenu(this, view);

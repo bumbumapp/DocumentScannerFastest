@@ -166,4 +166,14 @@
     <string name="license_key"></string>
     <string name="purchase_text">Your purchase was successful!</string>
     <string name="darkTheme">Dark Theme</string>
+    <string name="bento_home_title">Your scans</string>
+    <string name="bento_hero_title">Scan a document</string>
+    <string name="bento_hero_subtitle">Edges are found for you</string>
+    <string name="bento_tile_import">Import photos</string>
+    <string name="bento_tile_folder">New folder</string>
+    <string name="bento_search">Search</string>
+    <string name="bento_more">More options</string>
+    <string name="bento_greeting_morning">Good morning</string>
+    <string name="bento_greeting_afternoon">Good afternoon</string>
+    <string name="bento_greeting_evening">Good evening</string>
 </resources>

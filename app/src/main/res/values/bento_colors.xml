@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bento home: light ground, white cards, teal accent. -->
+    <color name="bento_ground">#F3F4F8</color>
+    <color name="bento_card">#FFFFFF</color>
+    <color name="bento_text">#0E1222</color>
+    <color name="bento_muted">#5B6275</color>
+    <color name="bento_accent">#12A587</color>
+    <color name="bento_on_accent">#FFFFFF</color>
+    <color name="bento_tile_photos_bg">#F1ECFE</color>
+    <color name="bento_tile_photos_fg">#5B3CC4</color>
+    <color name="bento_tile_folder_bg">#FFF6E0</color>
+    <color name="bento_tile_folder_fg">#A86A00</color>
+    <bool name="bento_light_bars">true</bool>
+</resources>
