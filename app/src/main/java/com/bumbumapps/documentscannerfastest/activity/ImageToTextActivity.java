@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumbumapps.documentscannerfastest.utils.AdsUtils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -105,12 +107,32 @@ public class ImageToTextActivity extends BaseActivity implements View.OnClickLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                TextRecognizer build = new TextRecognizer.Builder(getApplicationContext()).build();
-                if (!build.isOperational()) {
-                    Log.e(ImageToTextActivity.TAG, "Detector dependencies not loaded yet");
+                // play-services-vision needs Google Play services: on phones without GMS (Huawei) or when
+                // the OCR module is not downloaded yet, tell the user instead of hanging or crashing.
+                SparseArray<TextBlock> result = null;
+                if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext())
+                        == ConnectionResult.SUCCESS) {
+                    try {
+                        TextRecognizer build = new TextRecognizer.Builder(getApplicationContext()).build();
+                        if (build.isOperational()) {
+                            result = build.detect(new Frame.Builder().setBitmap(bitmap).build());
+                        } else {
+                            Log.e(ImageToTextActivity.TAG, "Detector dependencies not loaded yet");
+                        }
+                        build.release();
+                    } catch (RuntimeException e) {
+                        Log.e(ImageToTextActivity.TAG, "OCR failed", e);
+                        result = null;
+                    }
+                }
+                if (result == null) {
+                    runOnUiThread(() -> {
+                        tv_ocr_txt.setText("Text recognition is not available on this device.");
+                        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+                    });
                     return;
                 }
-                final SparseArray<TextBlock> detect = build.detect(new Frame.Builder().setBitmap(bitmap).build());
+                final SparseArray<TextBlock> detect = result;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

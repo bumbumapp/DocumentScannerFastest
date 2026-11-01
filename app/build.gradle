@@ -5,6 +5,17 @@ plugins {
    
 }
 
+
+// Huawei Ads (Petal) slot IDs for the AppGallery build: -PHMS_BANNER_ID=... or a gitignored ads.properties.
+// Until the real slots are set the hms build falls back to Huawei's public test slots.
+def hmsAdsProps = new Properties()
+def hmsAdsFile = rootProject.file('ads.properties')
+if (hmsAdsFile.exists()) hmsAdsFile.withInputStream { hmsAdsProps.load(it) }
+def hmsAdId = { String key, String fallback -> ((project.findProperty(key) ?: hmsAdsProps.getProperty(key))?.toString()?.trim()) ?: fallback }
+def HMS_TEST_BANNER_ID = 'testw6vs28auh3'
+def HMS_TEST_INTERSTITIAL_ID = 'testb4znbuh3n2'
+def HMS_BANNER_ID = hmsAdId('HMS_BANNER_ID', HMS_TEST_BANNER_ID)
+def HMS_INTERSTITIAL_ID = hmsAdId('HMS_INTERSTITIAL_ID', HMS_TEST_INTERSTITIAL_ID)
 android {
     namespace 'com.bumbumapps.documentscannerfastest'
     compileSdk 36
@@ -23,6 +34,21 @@ android {
         buildConfig true
         resValues true
     }
+    // play = Google Play (AdMob + UMP), hms = Huawei AppGallery (Huawei Ads, no Google Mobile Services).
+    flavorDimensions = ['store']
+    productFlavors {
+        play {
+            dimension 'store'
+        }
+        hms {
+            dimension 'store'
+            resValue 'string', 'hms_banner_id', HMS_BANNER_ID
+            resValue 'string', 'hms_interstitial_id', HMS_INTERSTITIAL_ID
+            resValue 'string', 'hms_test_banner_id', HMS_TEST_BANNER_ID
+            resValue 'string', 'hms_test_interstitial_id', HMS_TEST_INTERSTITIAL_ID
+        }
+    }
+
     buildTypes {
         debug {
             // Google's public test IDs so debug builds never request real ads.
@@ -87,8 +113,10 @@ android {
                 return false // continue
             }
 
-            // Enables building multiple APKs per ABI.
-            enable isReleaseBuild
+            // Enables building multiple APKs per ABI. Kept off: it conflicts with the release
+            // ndk.abiFilters (assemble*Release failed to configure); the release APK (AppGallery) is
+            // a single arm64-v8a + armeabi-v7a APK and the Play bundle is unaffected.
+            enable false
             //...
         }
     }
@@ -108,8 +136,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 
-    implementation 'com.google.android.gms:play-services-ads:25.5.0'
-    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    playImplementation 'com.google.android.gms:play-services-ads:25.5.0'
+    playImplementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    hmsImplementation 'com.huawei.hms:ads-lite:13.4.91.301'
     implementation 'androidx.core:core:1.17.0'
 //    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.9'
     implementation fileTree(dir: 'libs', include: '*.jar')
